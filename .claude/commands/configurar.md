@@ -21,14 +21,16 @@ voces del diálogo (por defecto edge-tts gratis) y el ritmo (piezas por semana).
 - Los siguientes: copia perfiles/mi-perfil/ (o la plantilla de la ficha) a perfiles/<slug>/ con las mismas subcarpetas.
 - La tabla "Perfiles" de CLAUDE.md se actualiza con cada uno.
 
-## 3. Herramientas (comprueba, no instales sin permiso)
-Corre y reporta en una tabla qué hay y qué falta:
-- `python --version` (3.10+), `node --version` (18+), `ffmpeg -version`, `ffprobe -version`
-- Paquetes de Python: `python -c "import numpy, edge_tts, faster_whisper, requests"`
-- video-studio/node_modules (si falta: `cd video-studio && npm install`)
-- Opcional: `gcloud --version` (imágenes IA en Vertex) y GOOGLE_CLOUD_PROJECT; ELEVENLABS_API_KEY en
-  video-studio/.env.local (voces de pago). Sin ellos la oficina funciona igual: voces gratis con edge-tts y sin imágenes IA.
-Para lo que falte, da el comando exacto de instalación (winget / pip / npm) y deja que el creador lo corra.
+## 3. Herramientas y servicios de pago
+Corre `python pipeline/revisar_equipo.py` y muestra su informe en una tabla corta.
+- Lo gratis que falte (paquetes de Python, `npm install`, navegador de Remotion): ofrece instalarlo con
+  `python pipeline/revisar_equipo.py --instalar`. Python, Node y ffmpeg los instala el creador con el comando winget
+  que da el informe (y abre otra terminal).
+- Servicios de pago: pregunta si tiene cuenta de ElevenLabs (voces) o de Gemini (imágenes IA). Si sí, dile en qué
+  archivo va cada clave (ELEVENLABS_API_KEY en video-studio/.env.local; GEMINI_API_KEY en .env.local de la raíz, o
+  Vertex con `! gcloud auth application-default login` + GOOGLE_CLOUD_PROJECT) y vuelve a correr el revisor.
+  Si no, dile claro qué se usará en su lugar: voces gratis de edge-tts y, en vez de imágenes IA, sus fotos y clips
+  o imágenes libres de Wikimedia Commons. La oficina funciona completa sin pagar nada extra.
 
 ## 4. Cierre
 Corre `python pipeline/estado.py`, marca en "Estado actual" de CLAUDE.md "Oficina configurada (fecha)" y sugiere

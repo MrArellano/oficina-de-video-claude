@@ -13,14 +13,13 @@ Ejemplo:
 El formato (--aspecto) se envía al modelo. Por defecto 9:16, el de video-studio.
 Si ya existe <nombre_archivo>.png en la pieza, se detiene (usa --sobrescribir para reemplazarla).
 
-Requiere:
-  - pip install google-genai
-  - Credenciales ADC: gcloud auth application-default login
-  - API habilitada: gcloud services enable aiplatform.googleapis.com
-  - Tu proyecto de Google Cloud (con facturación) en la variable GOOGLE_CLOUD_PROJECT, o con --proyecto
-    (opcional: GOOGLE_CLOUD_LOCATION, por defecto us-central1)
-No usa ninguna clave de API: la autenticación va por ADC. Cada imagen cuesta dinero en tu cuenta de Google Cloud:
-pon una alerta de presupuesto.
+Requiere pip install google-genai y UNA de estas dos cuentas (las dos cobran por imagen: pon una alerta de presupuesto):
+  A) Vertex AI (Google Cloud): gcloud auth application-default login, gcloud services enable aiplatform.googleapis.com
+     y tu proyecto con facturación en GOOGLE_CLOUD_PROJECT (o --proyecto). Opcional: GOOGLE_CLOUD_LOCATION (us-central1).
+  B) API de Gemini (AI Studio): GEMINI_API_KEY en .env.local (raíz de la oficina) o en el entorno. El nivel gratis
+     no genera imágenes: activa la facturación en AI Studio.
+Si no hay ninguna, sale con código 3 y el aviso de usar fotos propias o imágenes libres (Wikimedia Commons).
+Corre `python pipeline/revisar_equipo.py` para saber cuál tienes.
 """
 import argparse
 import datetime
@@ -30,6 +29,12 @@ import pathlib
 import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
+_env = RAIZ / ".env.local"
+if _env.exists():  # sin imprimir nada
+    for _l in _env.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if "=" in _l and not _l.strip().startswith("#"):
+            _k, _v = _l.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
 
 # Modelo por defecto (económico, para borradores y escenas). Probado en Vertex us-central1.
 MODELO = "gemini-2.5-flash-image"
@@ -51,8 +56,12 @@ def main():
     p.add_argument("--carpeta", help="guardar en <carpeta>/img en vez de en una pieza")
     p.add_argument("--proyecto", default=PROYECTO, help="proyecto de Google Cloud (por defecto GOOGLE_CLOUD_PROJECT)")
     a = p.parse_args()
-    if not a.proyecto:
-        sys.exit("Falta el proyecto de Google Cloud: define GOOGLE_CLOUD_PROJECT o pasa --proyecto.")
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not a.proyecto and not api_key:
+        print("SIN ACCESO A IMÁGENES IA: no hay GOOGLE_CLOUD_PROJECT (Vertex) ni GEMINI_API_KEY.\n"
+              "Alternativa gratis: fotos o clips propios, o imágenes libres de Wikimedia Commons (registra la licencia en "
+              "comun/creditos.md). Para activarlas, ver la ayuda de este script.")
+        sys.exit(3)
 
     from rutas import carpeta
     destino = (RAIZ / a.carpeta if a.carpeta else carpeta(a.slug, a.perfil)) / "img"
@@ -63,13 +72,14 @@ def main():
     from google import genai
     from google.genai import types
 
-    # Vertex AI con Application Default Credentials (gcloud auth application-default login).
-    # Cobra contra la cuenta de facturación vinculada al proyecto.
-    cliente = genai.Client(
-        vertexai=True,
-        project=a.proyecto,
-        location=UBICACION,
-    )
+    if a.proyecto:
+        # Vertex AI con Application Default Credentials. Cobra a la facturación del proyecto.
+        cliente = genai.Client(vertexai=True, project=a.proyecto, location=UBICACION)
+        via = "vertex"
+    else:
+        # API de Gemini (AI Studio) con clave. Cobra a la facturación de AI Studio.
+        cliente = genai.Client(api_key=api_key)
+        via = "gemini-api"
     respuesta = cliente.models.generate_content(
         model=a.modelo,
         contents=a.prompt,
@@ -96,6 +106,7 @@ def main():
         "tipo": "IA",
         "etiqueta": "Imagen creada con IA",
         "modelo": a.modelo,
+        "via": via,
         "prompt": a.prompt,
         "aspecto": a.aspecto,
         "fecha": datetime.date.today().isoformat(),

@@ -6,6 +6,12 @@ Pedido: $ARGUMENTS
 
 ## 0. Brief (obligatorio, antes de tocar nada)
 Si comun/yo.md o perfiles/*/ficha.md siguen con los `{{...}}` de la plantilla, primero corre `/configurar`.
+Lee .equipo.json (si no existe o tiene más de 7 días: `python pipeline/revisar_equipo.py`). Sus "modos" mandan:
+- voces = "edge-tts" → en dialogo.json usa voces edge-tts (las de la ficha o las gratis por defecto) aunque la ficha
+  pida ElevenLabs, y díselo al creador en una línea ("sin ElevenLabs: uso voz gratis").
+- imagenes_ia = "ninguna" → no propongas imágenes IA: fotos/clips propios, Wikimedia Commons o motion graphics.
+- render → las variables de Remotion para esa RAM.
+- Si "listo" es false, di qué falta instalar (comando del informe) antes de producir.
 Lee plantillas/brief-video.md, comun/yo.md y perfiles/<perfil>/ficha.md.
 - Deduce todo lo que puedas del pedido, de la ficha, de la idea en ideas/ y de los clips ya subidos
   (si hay clips/, mira sus fotogramas con ffmpeg antes de preguntar: lugar, gente, menores, luz).

@@ -8,19 +8,27 @@ projects/<name>/dialogo.json:
   "cards": [ {"from": 1, "to": 3, "text": "IA = SÍ A TODO", "emoji": "🤖", "color": "#ffd23f"} ],
   "outro": {"title": "...", "sub": "...", "dur": 3.0} }
 """
-import asyncio, json, os, subprocess, sys
+import asyncio, json, os, shutil, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FPS = 30
 
 def find_ffmpeg():
+    """ffmpeg del PATH; si no, el que instala winget (Gyan.FFmpeg) en Windows."""
+    if shutil.which("ffmpeg"):
+        return Path(shutil.which("ffmpeg"))
     base = Path.home() / "AppData/Local/Microsoft/WinGet/Packages"
     for p in base.glob("Gyan.FFmpeg*/**/bin/ffmpeg.exe"):
         return p
     return Path("ffmpeg")
 
 FF = find_ffmpeg()
+FFPROBE = FF.with_name("ffprobe.exe" if FF.suffix == ".exe" else "ffprobe") if FF.parent != Path(".") else Path("ffprobe")
+
+# Voces gratis de respaldo (edge-tts) si ElevenLabs no está disponible. Cámbialas con "edge" en cada voz de dialogo.json.
+EDGE_RESPALDO = {"yo": {"voice": "es-MX-JorgeNeural", "rate": "+5%"},
+                 "ia": {"voice": "es-US-AlonsoNeural", "rate": "+8%", "pitch": "+8Hz"}}
 
 def load_env():
     """Load .env.local into os.environ without printing its contents."""
@@ -71,8 +79,27 @@ async def tts(text, v, out):
                 words.append((s, s + ch["duration"] / 1e7))
     return words
 
+def hay_elevenlabs():
+    return bool(os.environ.get("ELEVENLABS_API_KEY"))
+
+
+def hablar(text, v, out, who="yo"):
+    """Voz de una línea -> (palabras con tiempos, respaldo usado). ElevenLabs si se pidió y funciona; si no, edge-tts gratis."""
+    if v.get("engine") == "elevenlabs":
+        try:
+            return tts_elevenlabs(text, v, out), False
+        except Exception as e:
+            motivo = str(e).splitlines()[0][:120]
+            if hasattr(e, "response") and getattr(e.response, "status_code", None) in (401, 402, 429):
+                motivo = f"ElevenLabs respondió {e.response.status_code} (clave, saldo o límite)"
+            edge = v.get("edge") or EDGE_RESPALDO.get(who, EDGE_RESPALDO["yo"])
+            print(f"  AVISO: sin ElevenLabs ({motivo}). Uso la voz gratis {edge['voice']} (edge-tts).", flush=True)
+            return asyncio.run(tts(text, edge, out)), True
+    return asyncio.run(tts(text, v, out)), False
+
+
 def duration(path):
-    r = subprocess.run([str(FF).replace("ffmpeg.exe", "ffprobe.exe"), "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+    r = subprocess.run([str(FFPROBE), "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
                        capture_output=True, text=True)
     return float(r.stdout.strip())
 
@@ -88,15 +115,13 @@ def main():
         v = g["voices"][ln["who"]]
         cache = pub / f"l{i:02d}.json"  # reuse the voice if the text and voice did not change (saves TTS credits)
         prev = json.loads(cache.read_text(encoding="utf-8")) if cache.exists() else None
-        if prev and f.exists() and prev.get("text") == ln["text"] and prev.get("voice") == v:
+        # Se reutiliza si no cambió; una voz de respaldo se rehace cuando ya hay clave de ElevenLabs.
+        if prev and f.exists() and prev.get("text") == ln["text"] and prev.get("voice") == v                 and not (prev.get("respaldo") and hay_elevenlabs()):
             words = [tuple(w) for w in prev["words"]]
             print(f"  l{i:02d}: voz reutilizada")
         else:
-            if v.get("engine") == "elevenlabs":
-                words = tts_elevenlabs(ln["text"], v, f)
-            else:
-                words = asyncio.run(tts(ln["text"], v, f))
-            cache.write_text(json.dumps({"text": ln["text"], "voice": v, "words": [list(w) for w in words]}, ensure_ascii=False), encoding="utf-8")
+            words, respaldo = hablar(ln["text"], v, f, ln["who"])
+            cache.write_text(json.dumps({"text": ln["text"], "voice": v, "respaldo": respaldo, "words": [list(w) for w in words]}, ensure_ascii=False), encoding="utf-8")
         d = duration(f)
         bg = ln.get("bg") or g.get("bg")
         lines.append({"who": ln["who"], "text": ln["text"], "cam": ln.get("cam", "me" if ln["who"] == "yo" else "ia"),

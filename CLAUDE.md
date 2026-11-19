@@ -5,6 +5,12 @@ a la vida (más tiempo con la familia y los hobbies), no que la sustituya.
 
 **Primera vez:** si comun/yo.md o alguna perfiles/*/ficha.md todavía tiene `{{...}}`, corre `/configurar` antes de nada.
 
+**Equipo y servicios de pago:** al abrir la sesión, un hook corre `python pipeline/revisar_equipo.py --hook` (solo la
+primera vez o cada 7 días). Si su informe aparece en el contexto, resúmeselo al creador al empezar: qué falta instalar
+y qué alternativa gratis se usará. El resultado queda en .equipo.json; sus "modos" mandan:
+voces elevenlabs | edge-tts (gratis) · imagenes_ia vertex | gemini-api | ninguna (fotos propias / Wikimedia) · render.
+Nunca propongas un servicio de pago que .equipo.json marque sin acceso; ofrece la alternativa gratis.
+
 ## Perfiles (nunca se mezclan: cada pieza es de uno solo)
 Cada carpeta de perfiles/ con ficha.md es un perfil (pipeline/rutas.py los detecta solo).
 | Perfil | Carpeta | Contenido | Voz |

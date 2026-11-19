@@ -48,3 +48,6 @@ calendario/estado.json
 
 # Códigos de la página de subida (solo en esta PC)
 pipeline/.codigo-subida-*
+
+# Resultado de pipeline/revisar_equipo.py (de cada PC)
+.equipo.json

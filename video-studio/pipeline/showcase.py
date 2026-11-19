@@ -13,15 +13,15 @@ import asyncio, json, os, shutil, subprocess, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from dialog import FF, FPS, ROOT, duration, load_env, tts, tts_elevenlabs  # noqa: E402
+from dialog import FF, FPS, ROOT, duration, hablar, hay_elevenlabs, load_env  # noqa: E402
 
 
 def voice(text, v, f, cache):
     prev = json.loads(cache.read_text(encoding="utf-8")) if cache.exists() else None
-    if prev and f.exists() and prev.get("text") == text and prev.get("voice") == v:
+    if prev and f.exists() and prev.get("text") == text and prev.get("voice") == v             and not (prev.get("respaldo") and hay_elevenlabs()):
         return [tuple(w) for w in prev["words"]]
-    words = tts_elevenlabs(text, v, f) if v.get("engine") == "elevenlabs" else asyncio.run(tts(text, v, f))
-    cache.write_text(json.dumps({"text": text, "voice": v, "words": [list(w) for w in words]}, ensure_ascii=False), encoding="utf-8")
+    words, respaldo = hablar(text, v, f, "yo")
+    cache.write_text(json.dumps({"text": text, "voice": v, "respaldo": respaldo, "words": [list(w) for w in words]}, ensure_ascii=False), encoding="utf-8")
     return words
 
 

@@ -39,8 +39,24 @@ git clone https://github.com/MrArellano/oficina-de-video-claude.git
 cd oficina-de-video-claude/video-studio && npm install && cd ..
 claude
 ```
+La primera vez que abres `claude` en la carpeta, la oficina **revisa tu PC sola** (`pipeline/revisar_equipo.py`):
+qué tienes instalado, qué falta y con qué comando instalarlo, y si tienes acceso a los servicios de pago. Donde no lo
+tienes, te avisa y usa la alternativa gratis. Puedes correrla cuando quieras:
+```bash
+python pipeline/revisar_equipo.py            # informe
+python pipeline/revisar_equipo.py --instalar # además instala lo gratis que falte (pip, npm, navegador de Remotion)
+```
+
+| Para | De pago (si tienes cuenta) | Gratis (lo que se usa si no) |
+|---|---|---|
+| Voces del diálogo y narración | ElevenLabs | edge-tts (voces de Microsoft, necesitan internet) |
+| Imágenes de apoyo | Gemini (Vertex AI o API de Gemini) | Tus fotos y clips, o Wikimedia Commons con su crédito |
+| Música y efectos | — | Sintetizados por la oficina, sin derechos de autor |
+
+Si una clave falla a medio vídeo (sin saldo, clave vencida), la voz cambia sola a edge-tts y te avisa.
+
 Dentro de Claude Code:
-1. `/configurar`: te pregunta quién eres, tus perfiles (cuentas, voz, pilares) y revisa tus herramientas.
+1. `/configurar`: te pregunta quién eres, tus perfiles (cuentas, voz, pilares) y deja listas tus herramientas.
 2. `/semana`: tendencias, recetario de diseño e ideas de la semana. Tú vetas.
 3. `/video <perfil> <idea>`: te hace el brief y te entrega el MP4 revisado y el texto del post.
 
@@ -54,8 +70,12 @@ para tu red local).
 
 ## Opcional (cuesta dinero, en tu propia cuenta)
 - **Voces de ElevenLabs**: pon `ELEVENLABS_API_KEY=...` en `video-studio/.env.local`. Sin ella se usan voces gratis de edge-tts.
-- **Imágenes IA (Gemini en Vertex AI)**: `gcloud auth application-default login` y la variable `GOOGLE_CLOUD_PROJECT`
-  con tu proyecto. Pon una alerta de presupuesto en Google Cloud. Claude siempre pide permiso antes de generar una.
+- **Imágenes IA con Gemini**, una de dos:
+  - API de Gemini: `GEMINI_API_KEY=...` en `.env.local` (en la raíz). Necesita facturación activa en AI Studio: el
+    nivel gratis no genera imágenes.
+  - Vertex AI: `gcloud auth application-default login` y la variable `GOOGLE_CLOUD_PROJECT` con tu proyecto.
+  Pon una alerta de presupuesto. Claude siempre pide permiso antes de generar una imagen.
+- Después de poner una clave, corre otra vez `python pipeline/revisar_equipo.py`.
 - **Lote del sábado**: `pipeline/lote_semanal.ps1` deja ideas, guiones y textos de la semana listos sin que estés
   presente (las instrucciones para programarlo vienen en el archivo). Gasta uso de tu plan de Claude.
 

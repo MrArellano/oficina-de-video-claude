@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python pipeline/estado.py:*)"
+      "Bash(python pipeline/estado.py:*)",
+      "Bash(python pipeline/revisar_equipo.py:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python pipeline/revisar_equipo.py --hook",
+            "timeout": 90
+          }
+        ]
+      }
     ]
   }
 }

@@ -64,13 +64,23 @@ def align(tokens, timed):
     return times
 
 def main():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from dialog import load_env
+    load_env()  # ELEVENLABS_API_KEY de video-studio/.env.local
     name = sys.argv[1]; proj = ROOT / "projects" / name
     g = json.loads((proj / "guion.json").read_text(encoding="utf-8"))
     pub = ROOT / "public" / name; pub.mkdir(parents=True, exist_ok=True)
     full = " ".join(s["text"].strip() for s in g["scenes"])
     audio = pub / "voice.mp3"
+    if g.get("engine") == "elevenlabs" and not os.environ.get("ELEVENLABS_API_KEY"):
+        print("  AVISO: sin ELEVENLABS_API_KEY. Uso la voz gratis de edge-tts.", flush=True)
+        g = {**g, "engine": "edge"}
     if g.get("engine") == "elevenlabs":
-        timed = tts_eleven(full, g["voice_id"], audio)
+        try:
+            timed = tts_eleven(full, g["voice_id"], audio)
+        except Exception as e:
+            print(f"  AVISO: ElevenLabs falló ({str(e).splitlines()[0][:120]}). Uso la voz gratis de edge-tts.", flush=True)
+            timed = asyncio.run(tts_edge(full, g.get("voice", "es-MX-JorgeNeural"), g.get("rate", "+8%"), audio))
     else:
         timed = asyncio.run(tts_edge(full, g.get("voice", "es-ES-AlvaroNeural"), g.get("rate", "+8%"), audio))
     hl = {norm(h) for h in g.get("highlight", [])}

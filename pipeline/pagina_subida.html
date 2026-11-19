@@ -1,0 +1,149 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Mis vídeos</title>
+<style>
+:root{--bg:#F6F5FA;--sf:#fff;--ink:#1F1B2D;--mu:#676379;--ln:#E3E0EC;--ac:#D93D72;--aci:#fff;--acs:#FBE3EC;--tl:#1F8A7E;--tls:#DDF1EE;--wr:#A86400;--wrs:#FBEBD3}
+@media (prefers-color-scheme:dark){:root{--bg:#15131D;--sf:#1F1C2A;--ink:#F1EEF8;--mu:#A7A2B8;--ln:#332F42;--ac:#FF6E9D;--aci:#1A0E14;--acs:#3A1F2B;--tl:#57C9BA;--tls:#17332F;--wr:#F2B35C;--wrs:#3A2C17;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:20px 16px 60px}
+.w{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-size:1.9rem;line-height:1.1;margin:0;letter-spacing:-.02em}h1 em{font-style:normal;color:var(--ac)}
+h2{font-size:1.1rem;margin:0 0 12px}.lede{color:var(--mu);margin:6px 0 0}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:18px}
+fieldset{border:0;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+legend{font-weight:800;font-size:1.02rem;padding:0;margin-bottom:12px}
+label.f{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:.95rem}.h{font-weight:400;color:var(--mu);font-size:.84rem}
+input[type=text],input[type=date],input[type=url],input[inputmode],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--ln);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:80px;resize:vertical}.q{font-weight:700;font-size:.95rem;margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip input{position:absolute;opacity:0}
+.chip span{display:inline-block;padding:7px 13px;border-radius:999px;border:1.5px solid var(--ln);font-weight:600;font-size:.92rem}
+.chip input:checked+span{background:var(--ac);border-color:var(--ac);color:var(--aci)}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.st label{position:relative}
+.st input{position:absolute;opacity:0}.st div{height:100%;border:1.5px solid var(--ln);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px}
+.st strong{font-size:.98rem}.st small{color:var(--mu);font-size:.82rem;line-height:1.35}.st input:checked+div{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac) inset}
+.note{background:var(--wrs);border-radius:10px;padding:9px 12px;font-size:.88rem;margin:0}.note b{color:var(--wr)}
+button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 22px;background:var(--ac);color:var(--aci);cursor:pointer}
+button.sec{background:var(--tl)}button:disabled{opacity:.5}
+#msg{font-size:.92rem;margin-top:10px}.ok{color:var(--tl);font-weight:700}.mal{color:var(--ac);font-weight:700}
+.f{background:var(--bg);border-radius:10px;padding:10px;margin:8px 0;font-size:.9rem;word-break:break-all}
+.b{height:8px;background:var(--ln);border-radius:4px;margin-top:6px;overflow:hidden}.b i{display:block;height:100%;width:0;background:var(--tl)}
+.vid{display:flex;flex-direction:column;gap:8px}.vid label{display:flex;gap:10px;align-items:center;border:1.5px solid var(--ln);border-radius:10px;padding:10px 12px}
+.vid input{accent-color:var(--ac)}.vid small{color:var(--mu)}
+[hidden]{display:none!important}
+</style></head><body><div class="w">
+<header><h1>Cuéntame tu vídeo, <em>yo lo edito</em></h1>
+<p class="lede">Esta página solo funciona en casa, con el Wi-Fi de la casa, en el horario que esté encendida.</p></header>
+
+<section class="card" id="acceso" hidden>
+  <label class="f" for="c">Código de 6 dígitos <span class="h">Pídeselo a quien maneja la oficina (solo la primera vez)</span>
+  <input id="c" inputmode="numeric" maxlength="6"></label>
+</section>
+
+<section class="card">
+<h2>1 · El brief</h2>
+<form id="brief" novalidate>
+<fieldset><legend>El vídeo</legend>
+  <label class="f" for="titulo">¿Cómo le llamamos?<input id="titulo" type="text" maxlength="80" placeholder="Ej. Cumple de la abuela"></label>
+  <div><p class="q">¿De qué va?</p><div class="chips">
+    <label class="chip"><input type="radio" name="pilar" value="familia"><span>Familia</span></label>
+    <label class="chip"><input type="radio" name="pilar" value="negocio"><span>Mi negocio</span></label>
+    <label class="chip"><input type="radio" name="pilar" value="viaje"><span>Viaje o salida</span></label></div></div>
+  <label class="f" for="trata">Cuéntamelo con tus palabras<textarea id="trata" maxlength="1500" placeholder="Qué pasó, dónde, qué fue lo más chistoso o bonito…"></textarea></label>
+  <div><p class="q">¿Qué quieres que sienta quien lo vea?</p><div class="chips">
+    <label class="chip"><input type="checkbox" name="sentir" value="risa"><span>Que se ría</span></label>
+    <label class="chip"><input type="checkbox" name="sentir" value="ternura"><span>Ternura</span></label>
+    <label class="chip"><input type="checkbox" name="sentir" value="antojo"><span>Antojo</span></label>
+    <label class="chip"><input type="checkbox" name="sentir" value="ganas de ir"><span>Ganas de ir</span></label>
+    <label class="chip"><input type="checkbox" name="sentir" value="ganas de comprar"><span>Ganas de comprar</span></label>
+    <label class="chip"><input type="checkbox" name="sentir" value="me identifico"><span>"Me pasa igual"</span></label></div></div>
+</fieldset>
+<fieldset><legend>Estilo</legend><div class="st">
+  <label><input type="radio" name="estilo" value="caos-bonito"><div><strong>Caos bonito</strong><small>Cortes rapidísimos, subtítulos grandes y zoom de golpe en el remate.</small></div></label>
+  <label><input type="radio" name="estilo" value="expectativa-realidad"><div><strong>Expectativa vs. realidad</strong><small>Antes / después con texto que contradice lo que se ve.</small></div></label>
+  <label><input type="radio" name="estilo" value="postal"><div><strong>Postal</strong><small>Tomas lentas, color cálido, títulos con lugar, precio y horario.</small></div></label>
+  <label><input type="radio" name="estilo" value="decide-claude" checked><div><strong>Tú decide</strong><small>Elijo el que mejor quede con tus clips.</small></div></label></div>
+  <label class="f" for="referencia">¿Un vídeo de ejemplo que te guste? <span class="h">Enlace de TikTok o Facebook (opcional)</span><input id="referencia" type="url" maxlength="300"></label>
+</fieldset>
+<fieldset><legend>Sonido</legend><div class="chips">
+  <label class="chip"><input type="radio" name="audio" value="mi voz de los clips"><span>Mi voz de los clips</span></label>
+  <label class="chip"><input type="radio" name="audio" value="música y ambiente"><span>Música y ambiente</span></label>
+  <label class="chip"><input type="radio" name="audio" value="narración"><span>Voz narrando</span></label>
+  <label class="chip"><input type="radio" name="audio" value="decide-claude" checked><span>Tú decide</span></label></div>
+</fieldset>
+<fieldset><legend>Quién sale</legend><div class="chips">
+  <label class="chip"><input type="checkbox" name="personas" value="menores"><span>Salen menores</span></label>
+  <label class="chip"><input type="checkbox" name="personas" value="creador"><span>Sale quien maneja la oficina</span></label>
+  <label class="chip"><input type="checkbox" name="personas" value="otras personas"><span>Salen otras personas</span></label>
+  <label class="chip"><input type="checkbox" name="personas" value="otras personas dieron permiso"><span>Dieron permiso</span></label></div>
+  <p class="note"><b>Los menores no se muestran:</b> si salen, les difumino la cara. A quien no haya dado permiso también.</p>
+  <label class="f" for="nosalir">¿Algo que NO debe salir?<textarea id="nosalir" maxlength="800" placeholder="Una toma, la fachada de la casa, una placa…"></textarea></label>
+</fieldset>
+<fieldset><legend>Datos y fecha</legend>
+  <label class="f" for="datos">Datos que deben aparecer <span class="h">Lugar, precios, horario. Solo lo que sepas seguro.</span><textarea id="datos" maxlength="800"></textarea></label>
+  <div><p class="q">¿Dónde lo vas a subir?</p><div class="chips">
+    <label class="chip"><input type="checkbox" name="redes" value="TikTok" checked><span>TikTok</span></label>
+    <label class="chip"><input type="checkbox" name="redes" value="Facebook" checked><span>Facebook</span></label></div></div>
+  <label class="f" for="fecha">¿Para cuándo? <span class="h">Opcional</span><input id="fecha" type="date"></label>
+</fieldset>
+<button id="enviar" type="submit">Enviar brief</button><div id="msg" role="status"></div>
+</form>
+</section>
+
+<section class="card">
+<h2>2 · Tus clips</h2>
+<p class="q">¿Para qué vídeo son?</p>
+<div class="vid" id="videos"><small>Envía primero el brief y aquí aparece tu vídeo.</small></div>
+<p class="h" style="margin:12px 0 6px">iPhone: toca <b>Fototeca</b>. Si arriba sale <b>Opciones</b>, elige <b>Actual</b> para que no se compriman.</p>
+<input id="a" type="file" multiple accept="image/*,video/*">
+<p style="margin:12px 0 0"><button id="s" class="sec" type="button">Subir clips</button></p>
+<div id="l"></div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const val=n=>document.querySelector(`input[name="${n}"]:checked`)?.value||"";
+const vals=n=>[...document.querySelectorAll(`input[name="${n}"]:checked`)].map(i=>i.value);
+const h=new URLSearchParams(location.hash.slice(1));
+try{if(h.get('k'))localStorage.setItem('codigo',h.get('k'))}catch(e){}
+let codigo='';try{codigo=localStorage.getItem('codigo')||''}catch(e){}
+$('c').value=codigo;if(!codigo)$('acceso').hidden=false;
+$('c').oninput=()=>{codigo=$('c').value.trim();try{localStorage.setItem('codigo',codigo)}catch(e){};cargar()};
+const msg=(t,c)=>{$('msg').textContent=t;$('msg').className=c||''};
+let elegido=new URLSearchParams(location.search).get('video')||'';
+
+async function cargar(){
+  if(!codigo)return;
+  const r=await fetch('/videos',{headers:{'X-Codigo':codigo}});
+  if(r.status==403){$('acceso').hidden=false;return}
+  const vs=await r.json();if(!vs.length)return;
+  if(!elegido)elegido=vs[0].slug;
+  $('videos').replaceChildren(...vs.map(v=>{const l=document.createElement('label');
+    const i=document.createElement('input');i.type='radio';i.name='video';i.value=v.slug;i.checked=v.slug===elegido;i.onchange=()=>elegido=v.slug;
+    const t=document.createElement('span');t.textContent=v.titulo;const s=document.createElement('small');s.textContent=v.clips+' clips';
+    const d=document.createElement('div');d.append(t,document.createElement('br'),s);l.append(i,d);return l}));
+}
+$('brief').onsubmit=async e=>{e.preventDefault();
+  const titulo=$('titulo').value.trim();if(!titulo){msg('Ponle un nombre al vídeo.','mal');$('titulo').focus();return}
+  if(!codigo){$('acceso').hidden=false;msg('Escribe el código arriba.','mal');return}
+  $('enviar').disabled=true;msg('Enviando…');
+  const b={titulo,pilar:val('pilar'),trata:$('trata').value.trim(),sentir:vals('sentir'),estilo:val('estilo'),referencia:$('referencia').value.trim(),
+    audio:val('audio'),personas:vals('personas'),no_salir:$('nosalir').value.trim(),datos:$('datos').value.trim(),redes:vals('redes'),fecha_deseada:$('fecha').value};
+  try{const r=await fetch('/brief',{method:'POST',headers:{'X-Codigo':codigo,'Content-Type':'application/json'},body:JSON.stringify(b)});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok){elegido=j.slug;$('brief').reset();msg('¡Listo! Ya me llegó. Ahora sube tus clips abajo.','ok');await cargar();$('a').scrollIntoView({behavior:'smooth',block:'center'})}
+    else msg('No se envió: '+(j.error||r.status),'mal')}
+  catch(err){msg('No se envió. ¿Hay conexión con el Wi-Fi de la casa?','mal')}
+  finally{$('enviar').disabled=false}};
+function subir(f){return new Promise(res=>{
+  const d=document.createElement('div');d.className='f';d.innerHTML='<span></span><div class="b"><i></i></div>';
+  d.firstChild.textContent=f.name+' ('+(f.size/1048576).toFixed(0)+' MB)';$('l').appendChild(d);
+  const x=new XMLHttpRequest();x.open('POST','/subir?nombre='+encodeURIComponent(f.name)+(elegido?'&video='+encodeURIComponent(elegido):''));
+  x.setRequestHeader('X-Codigo',codigo);
+  x.upload.onprogress=e=>{if(e.lengthComputable)d.querySelector('i').style.width=(100*e.loaded/e.total)+'%'};
+  x.onload=()=>{let r={};try{r=JSON.parse(x.responseText)}catch(e){}const s=document.createElement('div');
+    if(x.status==200){s.className='ok';s.textContent='Listo: '+r.guardado}else{s.className='mal';s.textContent='Error: '+(r.error||x.status)}d.appendChild(s);res()};
+  x.onerror=()=>{const s=document.createElement('div');s.className='mal';s.textContent='Se cortó la conexión';d.appendChild(s);res()};
+  x.send(f)})}
+$('s').onclick=async()=>{const fs=[...$('a').files];if(!fs.length){$('a').click();return}
+  if(!codigo){$('acceso').hidden=false;return}
+  $('s').disabled=true;for(const f of fs)await subir(f);$('s').disabled=false;$('a').value='';cargar()};
+cargar();
+</script></body></html>

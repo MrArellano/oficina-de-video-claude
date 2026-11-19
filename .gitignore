@@ -1,0 +1,50 @@
+# Secretos
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+
+# Registros locales (lote desatendido, página de subida)
+logs/
+
+# Ajustes locales de Claude Code
+.claude/settings.local.json
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Clips crudos (pesados y con personas): no van a git
+perfiles/*/edicion/*/clips/
+perfiles/*/edicion/_bandeja/
+perfiles/*/edicion/*/palabras.json
+# Vídeos de referencia desarmados (fotogramas de otros creadores)
+perfiles/*/tendencias/referencias/
+# Briefs del colaborador (pueden traer datos de la familia)
+perfiles/*/edicion/*/brief-colaborador.json
+
+# Vídeos, audio, imágenes de revisión y temporales
+perfiles/*/*/*/hojas/
+perfiles/*/*/*/_revisar/
+perfiles/*/*/*/tmp/
+*.mp4
+*.mov
+*.wav
+*.m4a
+*.mp3
+
+# Estudio de vídeo: solo se versiona el código
+video-studio/node_modules/
+video-studio/projects/
+video-studio/public/
+video-studio/out/
+video-studio/.env*
+
+# Estado generado
+calendario/estado.json
+
+# Códigos de la página de subida (solo en esta PC)
+pipeline/.codigo-subida-*

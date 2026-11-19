@@ -1,0 +1,6 @@
+# Claves locales (ELEVENLABS_API_KEY)
+/.env*
+node_modules/
+projects/
+public/
+out/

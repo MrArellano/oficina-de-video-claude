@@ -12,9 +12,9 @@ le gustó cómo quedan.
 > se comparte con nadie.
 
 ## Qué trae
-- **6 agentes** (`.claude/agents/`): investigador de tendencias y diseño, guionista, curador de imágenes,
-  adaptador a cada red, editor de calidad y analista de métricas. Cada uno con el modelo más barato que le alcanza.
-- **Comandos** (`.claude/commands/`): `/configurar`, `/semana`, `/producir`, `/video`, `/cierre` y `/lote-semanal`.
+- **7 agentes** (`.claude/agents/`): investigador de tendencias y diseño, guionista, curador de imágenes,
+  adaptador a cada red, editor de calidad, analista de métricas y un técnico que instala y arregla tu PC. Cada uno con el modelo más barato que le alcanza.
+- **Comandos** (`.claude/commands/`): `/configurar`, `/tecnico`, `/semana`, `/producir`, `/video`, `/cierre` y `/lote-semanal`.
 - **video-studio/**: motor de vídeo con [Remotion](https://www.remotion.dev): vlogs con tus clips (VlogVideo), diálogos
   con un avatar 3D y un robot de IA en estilo "cine", motion graphics y promos.
 - **pipeline/**: subir clips desde el celular por Wi-Fi (sin internet), desarmar un vídeo de referencia para estudiar su
@@ -22,30 +22,44 @@ le gustó cómo quedan.
 - **Kit de edición**: rótulos Bangers/Anton, transiciones, emojis Twemoji y efectos de sonido sintetizados (sin derechos
   de autor), todo **con moderación**.
 
-## Requisitos
-- Claude Code con tu cuenta ([instalación](https://docs.claude.com/en/docs/claude-code/setup))
-- Python 3.10+ · Node.js 18+ · ffmpeg
-- Probado en Windows 11 con 8 GB de RAM. En macOS y Linux también debería funcionar (los `.ps1` son solo para Windows).
+## Instalación fácil (no necesitas saber de computadoras)
+Necesitas una cuenta de Claude con plan de pago (Pro o Max) e internet. Lo demás se instala solo y es gratis.
 
-Windows, en una terminal:
+**Windows 10/11**
+1. Arriba en esta página: botón verde **Code → Download ZIP**. Descomprímelo (clic derecho → *Extraer todo*) en
+   *Documentos*, por ejemplo.
+2. Abre la carpeta y da **doble clic a `INSTALAR-Windows.bat`**. Si Windows dice "Windows protegió su PC", pulsa
+   *Más información → Ejecutar de todas formas*. Si pregunta si permites cambios, di que sí. Tarda 10–20 minutos.
+3. Abre **"Oficina de video"** en tu escritorio. La primera vez te pide iniciar sesión con tu cuenta de Claude en el
+   navegador.
+4. Escribe `/configurar` y contesta las preguntas. Listo.
+
+**Mac**
+1. Igual: **Code → Download ZIP** y descomprímelo.
+2. **Clic derecho en `INSTALAR-Mac.command` → Abrir** (te pedirá la contraseña de tu Mac; es normal).
+3. Doble clic a `ABRIR-OFICINA.command` y escribe `/configurar`.
+
+**¿Algo falló o falta algo?** Dentro de la oficina escribe `/tecnico` (o simplemente "algo no funciona, ayúdame").
+El agente técnico revisa tu computadora, instala lo que falte y te explica todo en palabras sencillas.
+
+Probado en Windows 11 con 8 GB de RAM. El instalador de Mac aún no se ha probado en una Mac real.
+
+<details>
+<summary>Instalación manual (para quien sabe usar la terminal)</summary>
+
+Requisitos: Claude Code, Git, Python 3.10+, Node.js 18+ y ffmpeg.
 ```powershell
-winget install Python.Python.3.12 OpenJS.NodeJS.LTS Gyan.FFmpeg
-pip install numpy edge-tts faster-whisper requests
-```
-
-## Empezar
-```bash
+winget install Git.Git Python.Python.3.12 OpenJS.NodeJS.LTS Gyan.FFmpeg Anthropic.ClaudeCode
 git clone https://github.com/MrArellano/oficina-de-video-claude.git
-cd oficina-de-video-claude/video-studio && npm install && cd ..
+cd oficina-de-video-claude
+python pipeline/revisar_equipo.py --instalar   # paquetes de Python, npm install y navegador de Remotion
 claude
 ```
-La primera vez que abres `claude` en la carpeta, la oficina **revisa tu PC sola** (`pipeline/revisar_equipo.py`):
-qué tienes instalado, qué falta y con qué comando instalarlo, y si tienes acceso a los servicios de pago. Donde no lo
-tienes, te avisa y usa la alternativa gratis. Puedes correrla cuando quieras:
-```bash
-python pipeline/revisar_equipo.py            # informe
-python pipeline/revisar_equipo.py --instalar # además instala lo gratis que falte (pip, npm, navegador de Remotion)
-```
+</details>
+
+## Qué revisa la oficina sola
+La primera vez que la abres (y luego cada semana), la oficina revisa tu computadora: qué tienes, qué falta y si
+tienes acceso a los servicios de pago. Donde no lo tienes, te avisa y usa la alternativa gratis.
 
 | Para | De pago (si tienes cuenta) | Gratis (lo que se usa si no) |
 |---|---|---|

@@ -226,7 +226,8 @@ def informe(d, breve=False):
         lineas += ["", "Faltan herramientas básicas: instálalas antes de hacer vídeos (o corre con --instalar lo gratis)."]
     if breve:
         lineas += ["", "[Para Claude] Resume esto al usuario en 3–5 líneas al empezar: qué falta instalar (con el comando),",
-                   "y que donde no hay servicio de pago se usará la alternativa gratis. Ofrece instalar lo que falte."]
+                   "y que donde no hay servicio de pago se usará la alternativa gratis. Si falta algo, ofrece /tecnico",
+                   "(el agente técnico lo instala por la persona, sin que tenga que saber de sistemas)."]
     return "\n".join(lineas)
 
 

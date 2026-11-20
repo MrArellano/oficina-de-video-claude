@@ -22,7 +22,8 @@ voces del diálogo (por defecto edge-tts gratis) y el ritmo (piezas por semana).
 - La tabla "Perfiles" de CLAUDE.md se actualiza con cada uno.
 
 ## 3. Herramientas y servicios de pago
-Corre `python pipeline/revisar_equipo.py` y muestra su informe en una tabla corta.
+Corre `python pipeline/revisar_equipo.py` y muestra su informe en una tabla corta, sin jerga.
+Si falta cualquier cosa, lanza el agente `tecnico`: él instala todo por el creador.
 - Lo gratis que falte (paquetes de Python, `npm install`, navegador de Remotion): ofrece instalarlo con
   `python pipeline/revisar_equipo.py --instalar`. Python, Node y ffmpeg los instala el creador con el comando winget
   que da el informe (y abre otra terminal).

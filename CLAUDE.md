@@ -7,7 +7,7 @@ a la vida (más tiempo con la familia y los hobbies), no que la sustituya.
 
 **Equipo y servicios de pago:** al abrir la sesión, un hook corre `python pipeline/revisar_equipo.py --hook` (solo la
 primera vez o cada 7 días). Si su informe aparece en el contexto, resúmeselo al creador al empezar: qué falta instalar
-y qué alternativa gratis se usará. El resultado queda en .equipo.json; sus "modos" mandan:
+y qué alternativa gratis se usará; si falta algo, ofrece `/tecnico` (lo instala por él). El resultado queda en .equipo.json; sus "modos" mandan:
 voces elevenlabs | edge-tts (gratis) · imagenes_ia vertex | gemini-api | ninguna (fotos propias / Wikimedia) · render.
 Nunca propongas un servicio de pago que .equipo.json marque sin acceso; ofrece la alternativa gratis.
 
@@ -66,6 +66,7 @@ Por defecto un solo vertical 1080x1920 para TikTok y Facebook. Durante el render
 | adaptador-plataforma | Guion → textos de cada red del perfil | haiku |
 | editor-calidad | Veracidad, voz del perfil, diseño, gancho y privacidad | sonnet (opus solo en destacadas) |
 | analista-metricas | Métricas por perfil → repetir / cambiar / probar | haiku |
+| tecnico | Revisa la PC, instala lo que falte y arregla errores, sin jerga | sonnet |
 Los agentes solo cargan si Claude Code se abre en esta carpeta; si no, se lanzan como general-purpose leyendo su .md
 con el modelo de la tabla.
 Ahorro: trabajar por lotes, lo estable vive en comun/, perfiles/*/ficha.md y plantillas/ (los agentes lo leen por
@@ -73,7 +74,8 @@ ruta), un guion sirve para todas las redes, reciclar lo que funcionó antes de i
 
 ## Flujo y comandos (.claude/commands/)
 Claude arma el contenido de punta a punta; el creador veta ideas, contesta el brief, aprueba el vídeo final y publica.
-0. `/configurar` → quién eres, tus perfiles y tus herramientas (la primera vez).
+0. `/configurar` → quién eres, tus perfiles y tus herramientas (la primera vez). `/tecnico` → instalar o arreglar la PC.
+   El creador puede no saber nada de sistemas: no le pidas abrir terminales ni editar archivos si tú puedes hacerlo.
 1. `/semana [perfil]` → tendencias, recetario de diseño e ideas con ★ por perfil. Se detiene para vetos.
 2. `/producir <slugs>` → guion + plan de edición, textos de cada red, revisión. Se detiene.
 3. `/video [perfil] [slug o idea]` → brief (preguntas) → guion si falta → producción → revisión de Claude → MP4 + post.txt.

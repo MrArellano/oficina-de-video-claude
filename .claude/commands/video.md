@@ -4,9 +4,17 @@ argument-hint: "[perfil] [slug o idea]"
 ---
 Pedido: $ARGUMENTS
 
-## 0. Brief (obligatorio, antes de tocar nada)
+## 0. Revisión técnica de la PC (SIEMPRE, cada vídeo) y brief
 Si comun/yo.md o perfiles/*/ficha.md siguen con los `{{...}}` de la plantilla, primero corre `/configurar`.
-Lee .equipo.json (si no existe o tiene más de 7 días: `python pipeline/revisar_equipo.py`). Sus "modos" mandan:
+**Antes de nada, lanza el agente `tecnico` en segundo plano** con el encargo "revisión antes del vídeo" (modelo
+haiku para la revisión). Él corre `python pipeline/revisar_equipo.py --video` y, si falta algo para editar
+(programas, paquetes, motor de vídeo, espacio en disco, ffmpeg que no codifica), lo instala o lo arregla.
+Mientras trabaja, tú haces el brief. **No pases al paso 2 (producción) sin su resultado**:
+- "LISTA" → di al creador una línea ("✅ PC lista: voces gratis, render en modo ahorro") y sigue.
+- Lo arregló → dilo en una línea y sigue.
+- No se pudo (necesita reiniciar, contraseña, liberar disco) → explica al creador qué hacer en palabras sencillas
+  y espera. El guion y los textos sí se pueden adelantar.
+Después lee .equipo.json (el técnico lo deja al día). Sus "modos" mandan:
 - voces = "edge-tts" → en dialogo.json usa voces edge-tts (las de la ficha o las gratis por defecto) aunque la ficha
   pida ElevenLabs, y díselo al creador en una línea ("sin ElevenLabs: uso voz gratis").
 - imagenes_ia = "ninguna" → no propongas imágenes IA: fotos/clips propios, Wikimedia Commons o motion graphics.

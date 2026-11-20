@@ -3,7 +3,8 @@
     "allow": [
       "Bash(python pipeline/estado.py:*)",
       "Bash(python pipeline/revisar_equipo.py:*)",
-      "Bash(python3 pipeline/revisar_equipo.py:*)"
+      "Bash(python3 pipeline/revisar_equipo.py:*)",
+      "Bash(python pipeline/revisar_equipo.py --video:*)"
     ]
   },
   "hooks": {

@@ -3,6 +3,7 @@ r"""Revisa la PC y las cuentas antes de usar la oficina, y decide qué usar: lo 
 Uso:
   python pipeline/revisar_equipo.py              revisión completa (comprueba en línea las claves de ElevenLabs y Gemini)
   python pipeline/revisar_equipo.py --instalar   además instala lo GRATIS que falte (paquetes de Python, npm, navegador de Remotion)
+  python pipeline/revisar_equipo.py --video      chequeo corto antes de cada vídeo (sale con código 2 si falta algo)
   python pipeline/revisar_equipo.py --hook       lo corre Claude Code al abrir la sesión: solo la primera vez
                                                  (o si pasaron 7 días); si no, no hace nada
 
@@ -73,7 +74,7 @@ def ffmpeg():
     return None
 
 
-def ram_gb():
+def ram_gb(libre=False):
     try:
         if WINDOWS:
             import ctypes
@@ -83,7 +84,12 @@ def ram_gb():
                            [(f"x{i}", ctypes.c_ulonglong) for i in range(6)]
             m = M(); m.l = ctypes.sizeof(M)
             ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
-            return round(m.t / 2**30)
+            return round((m.x0 if libre else m.t) / 2**30, 1 if libre else None)
+        if libre:
+            if platform.system() == "Darwin":
+                return None
+            info = dict(l.split(":", 1) for l in Path("/proc/meminfo").read_text().splitlines())
+            return round(int(info["MemAvailable"].split()[0]) / 2**20, 1)
         if platform.system() == "Darwin":
             return round(int(subprocess.check_output(["sysctl", "-n", "hw.memsize"])) / 2**30)
         return round(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 2**30)
@@ -250,6 +256,63 @@ def instalar(d):
             print(f"→ {g['que']}: instálalo tú con: {g['instalar']}")
 
 
+def exe_ffmpeg():
+    if shutil.which("ffmpeg"):
+        return shutil.which("ffmpeg")
+    for p in (Path.home() / "AppData/Local/Microsoft/WinGet/Packages").glob("Gyan.FFmpeg*/**/bin/ffmpeg.exe"):
+        return str(p)
+    return None
+
+
+def prueba_ffmpeg():
+    """Arma 1 s de vídeo vertical con audio: confirma que ffmpeg de verdad codifica (no solo que existe)."""
+    exe = exe_ffmpeg()
+    if not exe:
+        return False, "ffmpeg no está"
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        salida = Path(d) / "prueba.mp4"
+        code, out = correr([exe, "-v", "error", "-f", "lavfi", "-i", "testsrc=s=1080x1920:d=1:r=30",
+                            "-f", "lavfi", "-i", "sine=d=1", "-c:v", "libx264", "-preset", "ultrafast",
+                            "-c:a", "aac", "-shortest", "-y", str(salida)], timeout=60)
+        if code == 0 and salida.exists() and salida.stat().st_size > 1000:
+            return True, "codifica vídeo y audio"
+        return False, "falló la prueba: " + (out.splitlines()[-1] if out else f"código {code}")
+
+
+def revisar_para_video(en_linea=True):
+    """Chequeo corto antes de cada vídeo: lo de siempre + disco, memoria libre y una prueba real de ffmpeg."""
+    d = revisar(en_linea=en_linea)
+    libre_disco = round(shutil.disk_usage(RAIZ).free / 2**30, 1)
+    ram_libre = ram_gb(libre=True)
+    ff_ok, ff_det = prueba_ffmpeg()
+    extra = [
+        ("Espacio en disco", libre_disco >= 5, f"{libre_disco} GB libres" + ("" if libre_disco >= 5 else
+         " (un vídeo necesita unos 5 GB entre clips, proxies y render)"), "borra o mueve archivos grandes (vídeos viejos, Descargas)"),
+        ("Prueba de ffmpeg", ff_ok, ff_det, "winget install Gyan.FFmpeg  (o /tecnico)"),
+    ]
+    if ram_libre is not None:
+        extra.append(("Memoria libre", ram_libre >= 1.5, f"{ram_libre} GB",
+                      "cierra el navegador y otros programas antes del render"))
+    d["video"] = [{"que": q, "ok": ok, "detalle": det, "instalar": i} for q, ok, det, i in extra]
+    d["listo_video"] = d["listo"] and all(ok for _, ok, _, _ in extra[:2])
+    SALIDA.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    return d
+
+
+def informe_video(d):
+    filas = d["gratis"] + d["video"]
+    malas = [g for g in filas if not g["ok"]]
+    m = d["modos"]
+    voces = "ElevenLabs" if m["voces"] == "elevenlabs" else "gratis (edge-tts)"
+    img = f"Gemini ({m['imagenes_ia']})" if m["imagenes_ia"] != "ninguna" else "no (fotos propias o Wikimedia)"
+    lineas = [f"Revisión antes del vídeo: {'LISTA' if d['listo_video'] else 'FALTA ALGO'}",
+              f"Voces: {voces} · Imágenes IA: {img} · Render: {m['render']}"]
+    for g in malas:
+        lineas.append(f"  [FALTA] {g['que']}: {g['detalle']}  → {g['instalar']}")
+    return "\n".join(lineas)
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -259,7 +322,13 @@ def main():
     p.add_argument("--hook", action="store_true", help="solo si no hay revisión o tiene más de 7 días")
     p.add_argument("--instalar", action="store_true", help="instala lo gratis que falte")
     p.add_argument("--sin-red", action="store_true", help="no comprobar las claves en línea")
+    p.add_argument("--video", action="store_true", help="chequeo corto antes de cada vídeo (disco, memoria, prueba de ffmpeg)")
     a = p.parse_args()
+
+    if a.video:
+        d = revisar_para_video(en_linea=not a.sin_red)
+        print(informe_video(d))
+        sys.exit(0 if d["listo_video"] else 2)
 
     if a.hook and SALIDA.exists():
         try:

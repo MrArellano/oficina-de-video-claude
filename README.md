@@ -58,7 +58,8 @@ claude
 </details>
 
 ## Qué revisa la oficina sola
-La primera vez que la abres (y luego cada semana), la oficina revisa tu computadora: qué tienes, qué falta y si
+Cada vez que pides un vídeo, el agente técnico revisa antes que tu computadora tenga todo para editar (programas,
+espacio en disco, que ffmpeg funcione) y, si falta algo, lo arregla. Además, la primera vez que abres la oficina (y luego cada semana) revisa: qué tienes, qué falta y si
 tienes acceso a los servicios de pago. Donde no lo tienes, te avisa y usa la alternativa gratis.
 
 | Para | De pago (si tienes cuenta) | Gratis (lo que se usa si no) |

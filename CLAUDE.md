@@ -38,7 +38,10 @@ video-studio/     motor de vídeo (Remotion, avatar, voces); tiene su propio CLA
 ```
 Creación y edición van separadas: los clips del creador nunca se mezclan con lo que genera Claude.
 
-## Regla de oro: antes de cada vídeo, el BRIEF
+## Regla de oro: antes de cada vídeo, la REVISIÓN TÉCNICA y el BRIEF
+Lo pida con `/video` o con sus palabras ("hazme un vídeo de…", "edita estos clips"), sigue .claude/commands/video.md:
+primero el agente `tecnico` revisa en segundo plano que la PC tenga todo para editar (y lo arregla si falta),
+mientras tú haces el brief. No se produce nada hasta que el técnico diga que la PC está lista.
 Cada vez que el creador pida hacer o editar un vídeo, Claude le pregunta lo necesario (plantillas/brief-video.md) con
 AskUserQuestion: perfil, creación o edición, de qué trata y qué debe sentir, material, audio, personas y permisos,
 datos, y el estilo de diseño (Claude propone 2–3 del recetario de tendencias). Solo pregunta lo que no pueda deducir.
@@ -66,7 +69,7 @@ Por defecto un solo vertical 1080x1920 para TikTok y Facebook. Durante el render
 | adaptador-plataforma | Guion → textos de cada red del perfil | haiku |
 | editor-calidad | Veracidad, voz del perfil, diseño, gancho y privacidad | sonnet (opus solo en destacadas) |
 | analista-metricas | Métricas por perfil → repetir / cambiar / probar | haiku |
-| tecnico | Revisa la PC, instala lo que falte y arregla errores, sin jerga | sonnet |
+| tecnico | Antes de cada vídeo revisa la PC; instala lo que falte y arregla errores, sin jerga | haiku (revisión) / sonnet (arreglos) |
 Los agentes solo cargan si Claude Code se abre en esta carpeta; si no, se lanzan como general-purpose leyendo su .md
 con el modelo de la tabla.
 Ahorro: trabajar por lotes, lo estable vive en comun/, perfiles/*/ficha.md y plantillas/ (los agentes lo leen por

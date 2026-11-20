@@ -5,7 +5,7 @@ TikTok y Facebook de punta a punta: investiga tendencias y **cómo están diseñ
 brief, escribe el guion, monta tus clips con letras animadas, transiciones, emojis y efectos de sonido, revisa la
 calidad y te entrega el MP4 con los textos del post. **Tú solo grabas, eliges y publicas.**
 
-Hecho por [@mikes_vlogs](https://www.tiktok.com/@mikes_vlogs) para sus propios vídeos. Lo comparto porque a mucha gente
+Hecho por [@mikes_vlog](https://www.tiktok.com/@mikes_vlog) para sus propios vídeos. Lo comparto porque a mucha gente
 le gustó cómo quedan.
 
 > Funciona con **tu propia cuenta de Claude Code**. Cada quien usa su suscripción, sus claves y sus archivos: nada

@@ -11,6 +11,9 @@ le gustó cómo quedan.
 > Funciona con **tu propia cuenta de Claude Code**. Cada quien usa su suscripción, sus claves y sus archivos: nada
 > se comparte con nadie.
 
+**¿Primera vez?** Ve directo a [Instalación fácil](#instalación-fácil-no-necesitas-saber-de-computadoras) y luego a
+[Cómo se usa](#cómo-se-usa-en-palabras-sencillas). No necesitas saber programar: le hablas a Claude como a una persona.
+
 ## Qué trae
 - **7 agentes** (`.claude/agents/`): investigador de tendencias y diseño, guionista, curador de imágenes,
   adaptador a cada red, editor de calidad, analista de métricas y un técnico que instala y arregla tu PC. Cada uno con el modelo más barato que le alcanza.
@@ -70,18 +73,47 @@ tienes acceso a los servicios de pago. Donde no lo tienes, te avisa y usa la alt
 
 Si una clave falla a medio vídeo (sin saldo, clave vencida), la voz cambia sola a edge-tts y te avisa.
 
-Dentro de Claude Code:
-1. `/configurar`: te pregunta quién eres, tus perfiles (cuentas, voz, pilares) y deja listas tus herramientas.
-2. `/semana`: tendencias, recetario de diseño e ideas de la semana. Tú vetas.
-3. `/video <perfil> <idea>`: te hace el brief y te entrega el MP4 revisado y el texto del post.
+## Cómo se usa (en palabras sencillas)
+Abre **"Oficina de video"** en tu escritorio. Se abre una ventana negra: es Claude. Ahí **escribes como si le
+mandaras un mensaje a alguien** y presionas Enter. No tienes que aprender comandos; los que empiezan con `/` son atajos.
 
-Para subir clips desde el celular (misma red Wi-Fi):
-```bash
-python pipeline/recibir_videos.py --perfil <perfil> --video <slug>
-```
-Abre en el celular la dirección que imprime y escribe el código de 6 dígitos. En Windows, la primera vez quizá tengas
-que correr `pipeline/abrir_firewall.ps1` como administrador (marca tu Wi-Fi como red privada y abre el puerto 8000 solo
-para tu red local).
+**La primera vez:** escribe `/configurar`. Claude te pregunta quién eres, qué cuentas tienes (TikTok, Facebook), de qué
+tratan tus vídeos y cómo hablas. Contestas eligiendo opciones con las flechas y Enter. Solo se hace una vez.
+
+**Para hacer un vídeo con tus clips:**
+1. Escribe, por ejemplo: *"quiero editar un vídeo de mi viaje a la playa"*.
+2. Antes de empezar, el técnico revisa que tu computadora esté lista (unos segundos).
+3. Claude te hace unas preguntas: qué quieres que sienta la gente, qué estilo te gusta (te da 2–3 para elegir), etc.
+4. Te da una dirección y un código para **subir los clips desde tu celular** (misma red Wi-Fi de tu casa). Abres la
+   dirección en el celular, escribes el código y eliges los vídeos. También puedes copiarlos a la carpeta que te diga.
+5. Claude edita: letras, transiciones, emojis, efectos de sonido. Ves una barra de progreso mientras se arma.
+6. Te entrega el **MP4 terminado** y el **texto para el post**. Tú lo ves, pides cambios si quieres
+   (*"el título más grande"*, *"quita el emoji del final"*) y **lo publicas tú**.
+
+**Para un vídeo sin grabar nada** (un diálogo con un avatar y un robot, o animaciones): escribe
+*"hazme un vídeo explicando…"* y Claude lo crea desde cero.
+
+**Para ideas de la semana:** escribe `/semana`. Claude busca qué está pegando en tu tema, cómo están hechos esos
+vídeos y te propone ideas. Tú eliges cuáles sí.
+
+| Escribe… | Para… |
+|---|---|
+| `/configurar` | Darte de alta (la primera vez) |
+| `/video` o *"hazme un vídeo de…"* | Hacer o editar un vídeo |
+| `/semana` | Ideas y tendencias de la semana |
+| `/tecnico` o *"algo no funciona"* | Que el técnico revise y arregle tu computadora |
+| `/cierre` | Revisar cómo te fue (métricas) |
+
+**Consejos:** un vídeo a la vez; cierra el navegador mientras se arma el vídeo si tu computadora es lenta; si algo
+no se entiende, pregúntale a Claude *"explícamelo más fácil"*.
+
+### Preguntas frecuentes
+- **¿Cuánto cuesta?** Solo tu plan de Claude (Pro o Max). Todo lo demás es gratis. ElevenLabs y Gemini son opcionales.
+- **¿Se publica solo?** No. Nunca. Tú decides y publicas.
+- **¿Mis vídeos se suben a internet?** Tus clips y el MP4 se quedan en tu computadora. Lo que le escribes a Claude
+  y algunas fotos sueltas de tus clips (para revisar el vídeo) van a tu cuenta de Claude, como en cualquier chat.
+- **¿Necesito internet?** Sí, para hablar con Claude y para las voces gratis. Subir clips del celular solo usa tu Wi-Fi.
+- **¿Funciona en mi computadora?** Probado en Windows 11 con 8 GB de RAM. Con menos memoria va más lento.
 
 ## Opcional (cuesta dinero, en tu propia cuenta)
 - **Voces de ElevenLabs**: pon `ELEVENLABS_API_KEY=...` en `video-studio/.env.local`. Sin ella se usan voces gratis de edge-tts.
